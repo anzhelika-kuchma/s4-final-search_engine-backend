@@ -2,7 +2,6 @@ package com.keyin.model;
 
 import jakarta.persistence.*;
 
-import java.security.Key;
 import java.util.List;
 
 @Entity(name = "keyword")
