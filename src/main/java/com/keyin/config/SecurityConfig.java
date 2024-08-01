@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/account/login").permitAll()
                         .anyRequest().authenticated()
                 )
+                .logout((logout) -> logout.logoutUrl("/account/logout"))
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(this.userDetailsService)
                 .httpBasic(Customizer.withDefaults())
