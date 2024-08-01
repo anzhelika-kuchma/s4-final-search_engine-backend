@@ -5,7 +5,6 @@ import com.keyin.exception.AccountNameExistsException;
 import com.keyin.model.Account;
 import com.keyin.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -109,7 +108,7 @@ class AccountServiceUnitTest {
     void shouldCreateAccount() throws AccountNameExistsException {
         String name = "test";
         String password = "test";
-        String passwordEncoded = "{bcrypt}" + BCrypt.hashpw("test", BCrypt.gensalt(10));
+        String passwordEncoded = "{bcrypt}" + BCrypt.hashpw(password, BCrypt.gensalt(10));
 
         when(this.mockAccountRepository.findByName(name))
                 .thenReturn(Optional.empty());
