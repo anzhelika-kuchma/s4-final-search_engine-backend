@@ -29,6 +29,10 @@ public class AccountService {
         return this.accountRepository.findByName(name);
     }
 
+    public boolean checkDuplicateAccountByName(String name) {
+        return this.findAccountByName(name).isPresent();
+    }
+
     public Account createAccount(AccountDTO accountDTO) throws AccountNameExistsException {
         if (checkDuplicateAccountByName(accountDTO.name()))
             throw new AccountNameExistsException("Account with the name \"" + accountDTO.name() + "\" already exist. Try another name.");
@@ -41,7 +45,4 @@ public class AccountService {
         );
     }
 
-    public boolean checkDuplicateAccountByName(String name) {
-        return this.findAccountByName(name).isPresent();
-    }
 }
