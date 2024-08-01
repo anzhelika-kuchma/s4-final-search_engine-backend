@@ -7,7 +7,6 @@ import com.keyin.model.Account;
 import com.keyin.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/account")
@@ -35,8 +35,8 @@ public class AccountController {
         this.authenticationManager = authenticationManager;
     }
     @GetMapping
-    public String getAccount() {
-        return "Hello Account Page";
+    public ResponseEntity<ResponseDTO> getAccount(Principal principal) {
+        return ResponseEntity.ok(new ResponseDTO(principal.getName(), "Success"));
     }
     @GetMapping("/registration")
     public String getAccountRegistration() {
