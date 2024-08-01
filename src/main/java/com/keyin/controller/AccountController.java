@@ -1,11 +1,14 @@
 package com.keyin.controller;
+
 import com.keyin.dto.AccountDTO;
+import com.keyin.dto.ResponseDTO;
 import com.keyin.exception.AccountNameExistsException;
 import com.keyin.model.Account;
 import com.keyin.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/account")
@@ -34,43 +35,47 @@ public class AccountController {
         this.authenticationManager = authenticationManager;
     }
     @GetMapping
-    public String getAccount() {
-        return "Hello Account Page";
+    public ResponseEntity<ResponseDTO> getAccount(Principal principal) {
+        return ResponseEntity.ok(new ResponseDTO(principal.getName(), "Success"));
     }
     @GetMapping("/registration")
     public String getAccountRegistration() {
         return "Hello Account Registration Page";
     }
+
     @PostMapping("/registration")
-    public Account postAccountRegistration(@RequestBody AccountDTO accountDTO) throws AccountNameExistsException {
-        return this.accountService.createAccount(accountDTO);
+    public ResponseEntity<?> postAccountRegistration(@RequestBody AccountDTO accountDTO) {
+        try {
+            Account account = this.accountService.createAccount(accountDTO);
+
+            return new ResponseEntity<>(account, HttpStatus.CREATED);
+        } catch (AccountNameExistsException e) {
+            return new ResponseEntity<>(new ResponseDTO(accountDTO.name(), e.getMessage()), HttpStatus.CONFLICT);
+        }
     }
+
     @GetMapping("/login")
     public String getAccountLogin() {
         return "Hello Account Login Page";
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> postAccountLogin(
+    public ResponseEntity<ResponseDTO> postAccountLogin(
             @RequestBody AccountDTO accountDTO,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse
     ) {
         UsernamePasswordAuthenticationToken token =
                 UsernamePasswordAuthenticationToken.unauthenticated(accountDTO.name(), accountDTO.password());
-
         Authentication authentication = this.authenticationManager.authenticate(token);
-
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
-
         SecurityContextHolder.setContext(context);
 
         this.securityContextRepository.saveContext(context, httpServletRequest, httpServletResponse);
 
-        Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("message", "Logged in successfully");
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(
+                new ResponseDTO(accountDTO.name(), "Logged in successfully")
+        );
     }
 }

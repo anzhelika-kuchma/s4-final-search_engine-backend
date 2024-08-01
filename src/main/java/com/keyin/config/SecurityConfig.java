@@ -1,5 +1,4 @@
 package com.keyin.config;
-
 import com.keyin.service.JpaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,13 +15,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
-
     @Autowired
     public SecurityConfig(
             JpaUserDetailsService jpaUserDetailsService,
@@ -31,7 +30,6 @@ public class SecurityConfig {
         this.userDetailsService = jpaUserDetailsService;
         this.authenticationEntryPoint = customAuthenticationEntryPoint;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,6 +38,11 @@ public class SecurityConfig {
                         .requestMatchers("/account/registration").permitAll()
                         .requestMatchers("/account/login").permitAll()
                         .anyRequest().authenticated()
+                )
+                .logout((logout) -> logout
+                                .logoutUrl("/account/logout")
+//                        .logoutSuccessUrl("/")
+                                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(this.userDetailsService)
@@ -50,7 +53,6 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(this.authenticationEntryPoint)
                 );
-
         return http.build();
     }
     @Bean
