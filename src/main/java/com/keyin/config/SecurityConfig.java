@@ -1,5 +1,7 @@
 package com.keyin.config;
+
 import com.keyin.service.JpaUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,15 +14,24 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
-    public SecurityConfig(JpaUserDetailsService jpaUserDetailsService) {
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    public SecurityConfig(
+            JpaUserDetailsService jpaUserDetailsService,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint
+    ) {
         this.userDetailsService = jpaUserDetailsService;
+        this.authenticationEntryPoint = customAuthenticationEntryPoint;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -30,28 +41,27 @@ public class SecurityConfig {
                         .requestMatchers("/account/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .logout((logout) -> logout.logoutUrl("/account/logout"))
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(this.userDetailsService)
                 .httpBasic(Customizer.withDefaults())
                 .securityContext((securityContext) -> securityContext
                         .requireExplicitSave(true)
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(this.authenticationEntryPoint)
                 );
 
         return http.build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
     @Bean
     public AuthenticationManager authenticationManager(PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(this.userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
-
         return new ProviderManager(authenticationProvider);
     }
 }
