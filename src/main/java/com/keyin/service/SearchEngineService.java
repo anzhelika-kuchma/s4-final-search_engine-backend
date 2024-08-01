@@ -37,7 +37,7 @@ public class SearchEngineService {
         Keyword keyword = this.keywordService.createKeyword(query);
         Account account = this.accountService
                 .findAccountByName(name)
-                .orElseThrow(() -> new AccountNotFoundException("Something wrong. Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Something went wrong. Account not found"));
 
         this.accountKeywordService.createAccountKeywordAssociation(account, keyword);
 
