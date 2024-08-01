@@ -16,9 +16,7 @@ public class AccountService {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    public Optional<Account> findAccountById(Long id) {
-        return this.accountRepository.findById(id);
-    }
+
     public Optional<Account> findAccountByName(String name) {
         return this.accountRepository.findByName(name);
     }
@@ -27,7 +25,7 @@ public class AccountService {
     }
 
     public Account createAccount(AccountDTO accountDTO) throws AccountNameExistsException {
-        if (checkDuplicateAccountByName(accountDTO.name()))
+        if (this.checkDuplicateAccountByName(accountDTO.name()))
             throw new AccountNameExistsException("Account already exist. Try another name");
 
         return this.accountRepository.save(

@@ -44,4 +44,6 @@ public class AccountKeyword {
         this.keyword = keyword;
         this.dateTime = dateTime;
     }
+
+  
 }
