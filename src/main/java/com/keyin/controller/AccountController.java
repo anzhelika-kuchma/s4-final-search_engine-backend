@@ -1,5 +1,4 @@
 package com.keyin.controller;
-
 import com.keyin.dto.AccountDTO;
 import com.keyin.dto.ResponseDTO;
 import com.keyin.exception.AccountNameExistsException;
@@ -18,7 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/account")
@@ -34,31 +35,31 @@ public class AccountController {
         this.accountService = accountService;
         this.authenticationManager = authenticationManager;
     }
+
     @GetMapping
-    public ResponseEntity<ResponseDTO> getAccount(Principal principal) {
-        return ResponseEntity.ok(new ResponseDTO(principal.getName(), "Success"));
+    public ResponseEntity<Account> getAccount(Principal principal) {
+        Optional<Account> accountOptional = this.accountService.findAccountByName(principal.getName());
+
+        return ResponseEntity.of(accountOptional);
     }
+
     @GetMapping("/registration")
     public String getAccountRegistration() {
         return "Hello Account Registration Page";
     }
-
     @PostMapping("/registration")
     public ResponseEntity<?> postAccountRegistration(@RequestBody AccountDTO accountDTO) {
         try {
             Account account = this.accountService.createAccount(accountDTO);
-
             return new ResponseEntity<>(account, HttpStatus.CREATED);
         } catch (AccountNameExistsException e) {
             return new ResponseEntity<>(new ResponseDTO(accountDTO.name(), e.getMessage()), HttpStatus.CONFLICT);
         }
     }
-
     @GetMapping("/login")
     public String getAccountLogin() {
         return "Hello Account Login Page";
     }
-
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> postAccountLogin(
             @RequestBody AccountDTO accountDTO,
@@ -71,9 +72,7 @@ public class AccountController {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
-
         this.securityContextRepository.saveContext(context, httpServletRequest, httpServletResponse);
-
         return ResponseEntity.ok(
                 new ResponseDTO(accountDTO.name(), "Logged in successfully")
         );
