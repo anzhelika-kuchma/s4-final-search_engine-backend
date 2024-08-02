@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ProcedureServiceUnitTest {
+class EventServiceUnitTest {
 
     EventService eventServiceUnderTest;
 
@@ -42,24 +42,24 @@ class ProcedureServiceUnitTest {
 
         assertAll(
                 () -> assertEquals(2, eventListActual.size()),
-                () -> assertTrue(eventListActual.stream().allMatch(procedure -> procedure.getName().contains("event")))
+                () -> assertTrue(eventListActual.stream().allMatch(event -> event.getName().contains("event")))
         );
     }
 
     @Test
     @DisplayName("Should return all events containing keyword")
     void findEventByKeyword() {
-        List<Event> procedureListExpected = new ArrayList<>();
+        List<Event> eventListExpected = new ArrayList<>();
 
-        procedureListExpected.add(new Event("second event with test keyword"));
+        eventListExpected.add(new Event("second event with test keyword"));
 
-        when(this.mockEventRepository.findByNameContainingIgnoreCase("test")).thenReturn(procedureListExpected);
+        when(this.mockEventRepository.findByNameContainingIgnoreCase("test")).thenReturn(eventListExpected);
 
-        List<Event> procedureListActual = this.eventServiceUnderTest.findEventByKeyword("test");
+        List<Event> eventListActual = this.eventServiceUnderTest.findEventByKeyword("test");
 
         assertAll(
-                () -> assertEquals(1, procedureListActual.size()),
-                () -> assertEquals(procedureListExpected.getFirst(), procedureListActual.getFirst())
+                () -> assertEquals(1, eventListActual.size()),
+                () -> assertEquals(eventListExpected.getFirst(), eventListActual.getFirst())
         );
     }
 }
