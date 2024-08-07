@@ -1,4 +1,5 @@
 package com.keyin.service;
+
 import com.keyin.model.Account;
 import com.keyin.model.AccountKeyword;
 import com.keyin.model.Keyword;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountKeywordService {
     private final AccountKeywordRepository accountKeywordRepository;
+
     public AccountKeywordService(AccountKeywordRepository accountKeywordRepository) {
         this.accountKeywordRepository = accountKeywordRepository;
     }

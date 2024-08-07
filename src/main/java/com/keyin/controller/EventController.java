@@ -31,14 +31,14 @@ public class EventController {
     }
 
     @GetMapping(params = "keyword")
-    public ResponseEntity<?> getProceduresByKeyword(
+    public ResponseEntity<?> getEventsByKeyword(
             @RequestParam(value = "keyword") String keyword,
             Principal principal
     ) {
         try {
-            List<Event> procedureList = this.searchEngineService.processQuery(keyword, principal.getName());
+            List<Event> eventList = this.searchEngineService.processQuery(keyword, principal.getName());
 
-            return ResponseEntity.ok(procedureList);
+            return ResponseEntity.ok(eventList);
         } catch (AccountNotFoundException e) {
             return new ResponseEntity<>(
                     new ResponseDTO(principal.getName(), e.getMessage()),

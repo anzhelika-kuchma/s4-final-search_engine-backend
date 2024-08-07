@@ -22,3 +22,4 @@ public class EventService {
         return this.eventRepository.findByNameContainingIgnoreCase(keyword);
     }
 }
+

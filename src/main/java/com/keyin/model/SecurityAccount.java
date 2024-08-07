@@ -51,4 +51,3 @@ public class SecurityAccount implements UserDetails {
         return true;
     }
 }
-

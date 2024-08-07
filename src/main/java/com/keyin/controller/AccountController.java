@@ -1,4 +1,5 @@
 package com.keyin.controller;
+
 import com.keyin.dto.AccountDTO;
 import com.keyin.dto.ResponseDTO;
 import com.keyin.exception.AccountNameExistsException;
@@ -27,6 +28,7 @@ public class AccountController {
     private final AccountService accountService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+
     @Autowired
     public AccountController(
             AccountService accountService,
@@ -47,19 +49,23 @@ public class AccountController {
     public String getAccountRegistration() {
         return "Hello Account Registration Page";
     }
+
     @PostMapping("/registration")
     public ResponseEntity<?> postAccountRegistration(@RequestBody AccountDTO accountDTO) {
         try {
             Account account = this.accountService.createAccount(accountDTO);
+
             return new ResponseEntity<>(account, HttpStatus.CREATED);
         } catch (AccountNameExistsException e) {
             return new ResponseEntity<>(new ResponseDTO(accountDTO.name(), e.getMessage()), HttpStatus.CONFLICT);
         }
     }
+
     @GetMapping("/login")
     public String getAccountLogin() {
         return "Hello Account Login Page";
     }
+
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> postAccountLogin(
             @RequestBody AccountDTO accountDTO,
@@ -68,11 +74,16 @@ public class AccountController {
     ) {
         UsernamePasswordAuthenticationToken token =
                 UsernamePasswordAuthenticationToken.unauthenticated(accountDTO.name(), accountDTO.password());
+
         Authentication authentication = this.authenticationManager.authenticate(token);
+
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
+
         SecurityContextHolder.setContext(context);
+
         this.securityContextRepository.saveContext(context, httpServletRequest, httpServletResponse);
+
         return ResponseEntity.ok(
                 new ResponseDTO(accountDTO.name(), "Logged in successfully")
         );

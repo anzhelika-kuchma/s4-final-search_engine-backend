@@ -1,4 +1,5 @@
 package com.keyin.service;
+
 import com.keyin.dto.AccountDTO;
 import com.keyin.exception.AccountNameExistsException;
 import com.keyin.model.Account;
@@ -6,11 +7,14 @@ import com.keyin.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
+
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Autowired
     public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
@@ -20,6 +24,7 @@ public class AccountService {
     public Optional<Account> findAccountByName(String name) {
         return this.accountRepository.findByName(name);
     }
+
     public boolean checkDuplicateAccountByName(String name) {
         return this.findAccountByName(name).isPresent();
     }

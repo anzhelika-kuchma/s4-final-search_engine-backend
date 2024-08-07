@@ -29,10 +29,6 @@ public class SearchEngineService {
         this.accountService = accountService;
     }
 
-    public List<Event> fetchEvents() {
-        return this.eventService.findAllEvents();
-    }
-
     public List<Event> processQuery(String query, String name) throws AccountNotFoundException {
         Keyword keyword = this.keywordService.createKeyword(query);
         Account account = this.accountService
