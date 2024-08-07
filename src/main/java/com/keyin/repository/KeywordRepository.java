@@ -8,3 +8,4 @@ import java.util.Optional;
 public interface KeywordRepository extends ListCrudRepository<Keyword, Long> {
     Optional<Keyword> findDistinctByName(String name);
 }
+

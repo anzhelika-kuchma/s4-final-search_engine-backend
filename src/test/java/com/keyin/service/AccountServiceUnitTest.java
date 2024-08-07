@@ -137,7 +137,7 @@ class AccountServiceUnitTest {
     void shouldThrowAccountNameExistsException() throws AccountNameExistsException {
         String name = "test";
         String password = "test";
-        String passwordEncoded = "{bcrypt}" + BCrypt.hashpw("test", BCrypt.gensalt(10));
+        String passwordEncoded = "{bcrypt}" + BCrypt.hashpw(password, BCrypt.gensalt(10));
 
         Account accountExpected = new Account(name, passwordEncoded);
 
