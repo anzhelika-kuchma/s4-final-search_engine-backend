@@ -79,4 +79,6 @@ insert into event (name) values ('The creation of the National Parks Act, May 22
 insert into event (name) values ('The introduction of the Canadian Charter of Rights and Freedoms, April 17, 1982');
 insert into event (name) values ('The founding of the Royal Canadian Geographical Society, June 15, 1920');
 insert into event (name) values ('The creation of the Canada Council for the Arts, April 21, 1957');
-
+--insert into event (name) values ('The Canadian Citizenship Act, January 1, 1947');
+--insert into event (name) values ('The completion of the Trans-Canada Railway, November 7, 1885');
+--insert into event (name) values ('The Battle of the Plains of Abraham, September 13, 1759');
