@@ -14,7 +14,7 @@
 	<name>s4-final-search_engine-backend</name>
 	<description>Search Engine </description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>22</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
