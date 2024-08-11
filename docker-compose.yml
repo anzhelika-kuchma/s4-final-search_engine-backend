@@ -8,4 +8,4 @@ services:
       - spring.datasource.url=jdbc:postgresql://host.docker.internal:5432/searchEngine
       #- spring.datasource.url=jdbc:mysql://s4-fall-2022.ce2vcezehro2.us-east-1.rds.amazonaws.com/fall_2022
       - spring.datasource.password=Kuchmeny
-      - spring.datasource.username=root
+      - spring.dasetasource.username=root
